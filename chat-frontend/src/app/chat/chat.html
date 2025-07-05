@@ -1,0 +1,66 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div class="card rounded-5 shadow border-0">
+        <!-- Header -->
+        <div class="card-header bg-teal text-white py-3 rounded-top-5 d-flex align-items-center justify-content-between">
+          <h4 class="mb-0">
+            <i class="bi bi-chat-dots-fill me-2"></i>
+            AI Chat Assistant
+          </h4>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="card-body px-4 py-3 bg-soft overflow-hidden position-relative">
+          <div class="chat-container overflow-auto px-1" style="max-height: 420px;" #chatContainer>
+            <div
+              *ngFor="let message of messages"
+              class="d-flex flex-column mb-3"
+              [ngClass]="message.isUser ? 'align-items-end' : 'align-items-start'">
+              <div
+                class="chat-bubble px-3 py-2 rounded-4 shadow-sm"
+                [ngClass]="message.isUser ? 'bg-teal text-white user-msg' : 'bg-white text-dark border ai-msg'">
+                <div class="fw-semibold small mb-1">
+                  {{ message.isUser ? 'You' : 'AI' }}
+                </div>
+                <div *ngIf="message.isUser">{{ message.content }}</div>
+                <div *ngIf="!message.isUser" [innerHTML]="parseMarkdown(message.content)"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Typing Indicator -->
+          <div *ngIf="isTyping" class="typing-indicator mt-2 text-muted d-flex align-items-center">
+            <i class="bi bi-three-dots animate-blink me-2 fs-5"></i>
+            AI is typing...
+          </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="card-footer bg-white border-top px-4 py-3 rounded-bottom-5">
+          <form (ngSubmit)="sendMessage()" class="d-flex gap-2 align-items-start">
+            <textarea
+              [(ngModel)]="newMessage"
+              name="messageInput"
+              class="form-control rounded-4 shadow-sm border-secondary-subtle"
+              rows="2"
+              placeholder="Type your message..."
+              (keydown)="onKeyDown($event)"
+              [disabled]="isLoading"
+              required></textarea>
+
+            <button
+              type="submit"
+              class="btn btn-teal rounded-circle d-flex align-items-center justify-content-center"
+              style="width: 3rem; height: 3rem;"
+              [disabled]="isLoading || !newMessage.trim()"
+              aria-label="Send">
+              <i class="bi" [ngClass]="isLoading ? 'bi-hourglass-split' : 'bi-send-fill'"></i>
+            </button>
+          </form>
+          <div class="form-text mt-1 text-end small">Shift+Enter for new line • Enter to send</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
